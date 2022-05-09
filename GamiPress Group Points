@@ -1,0 +1,41 @@
+
+//**add group points shortcode*/
+//
+function my_prefix_gamipress_buddypress_group_points_shortcode( $atts ) {
+    $atts = shortcode_atts( array(
+        'points_type' => '',
+        'group_id' => '',
+    ), $atts, 'gamipress_buddypress_group_points' );
+    $points_type = $atts['points_type'];
+    $group_id = $atts['group_id'];
+    $points = 0;
+    // Bail if not is a valid points type
+    if( ! in_array( $points_type, gamipress_get_points_types_slugs() ) ) {
+        return $points;
+    }
+    // If group not provided, use the current group instead
+    if( $group_id === '' ) {
+        $group_id = bp_get_current_group_id();
+    }
+    $group_id = absint( $group_id );
+    // Bail if group ID not received or can not find the current group ID
+    if( $group_id === 0 ) {
+        return $points;
+    }
+    // Get the group members
+    $members = groups_get_group_members( array(
+        'group_id' => $group_id,
+        'page' => 1,
+        'per_page' => 999,
+        'exclude_admins_mods' => false
+    ) );
+    if( $members && isset( $members['members'] ) && ! empty( $members['members'] ) ) {
+        // Loop members to get each member balance
+        foreach( $members['members'] as $member ) {
+            $points += gamipress_get_user_points( $member->ID, $points_type );
+        }
+    }
+    // Return the group points
+    return $points;
+}
+add_shortcode( 'gamipress_buddypress_group_points', 'my_prefix_gamipress_buddypress_group_points_shortcode' );
