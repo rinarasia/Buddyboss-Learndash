@@ -1,0 +1,22 @@
+// if Learndash unsubscribed user tries to access Buddyboss individual pages by slug, then redirect to dashboard
+function template_redirect()
+{
+    //if logged in and on a bp page except registration or activation and tries to access forums, members or groups page
+    if( is_user_logged_in() && ! learndash_is_user_in_group(1480) && ! bp_is_blog_page() && ! bp_is_activation_page() && ! bp_is_register_page() && is_page( array('forums', 'members', 'groups') )) {
+        wp_redirect( home_url( '/dashboard/' ) );
+        exit();
+    }
+}
+add_action( 'template_redirect', 'template_redirect' );
+
+
+// ifLearndash unsubscribed user tries to access ANY Buddyboss page except their own profile page, then redirect to dashboard
+function template_redirect()
+{
+    //if logged in and on a bp page except registration or activation
+    if( is_user_logged_in() && ! learndash_is_user_in_group(1480) && ! bp_is_blog_page() && ! bp_is_activation_page() && ! bp_is_register_page() && is_buddypress() && ! bp_is_user_profile()) {
+        wp_redirect( home_url( '/dashboard/' ) );
+        exit();
+    }
+}
+add_action( 'template_redirect', 'template_redirect' );
