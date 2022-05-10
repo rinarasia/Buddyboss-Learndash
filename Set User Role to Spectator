@@ -1,0 +1,13 @@
+// change user status if not taking course
+// 
+add_action('wp_head', function(){
+if(is_user_logged_in()){
+    $user = wp_get_current_user();
+    if ( in_array( 'bbp_participant', (array) $user->roles ) && ! learndash_is_user_in_group(1480)) {
+			// Remove role
+            $user->remove_role( 'bbp_participant' );
+            // Add role
+            $user->add_role( 'bbp_spectator' );
+        }
+    }
+})
