@@ -1,0 +1,26 @@
+if( is_user_logged_in() ) {
+$page = get_page_by_path( 'dashboard'); 
+update_option( 'page_on_front', $page->ID );
+update_option( 'show_on_front', 'page' );
+}
+else {
+$page = get_page_by_path( 'home' );
+update_option( 'page_on_front', $page->ID );
+update_option( 'show_on_front', 'page' );
+}
+
+/**
+ * WordPress function for redirecting users on login based on user role
+ */
+function sub_login_redirect( $url, $request, $user ){
+    //is a user
+    if( $user && is_object( $user ) && is_a( $user, 'WP_User' ) ) {
+        //is user subscriber
+        if( $user->has_cap( 'subscriber' ) ) {
+            //go to dashboard page
+            $url = home_url('dashboard');
+        }
+    }
+    return $url;
+}
+add_filter('login_redirect', 'sub_login_redirect', 10, 3 );
