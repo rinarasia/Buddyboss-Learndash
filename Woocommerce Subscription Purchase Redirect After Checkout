@@ -1,0 +1,13 @@
+add_action('template_redirect', 'webtoffee_custom_redirect_after_purchase');
+
+function webtoffee_custom_redirect_after_purchase() {
+
+    global $wp;
+
+    if (is_checkout() && !empty($wp->query_vars['order-received'])) {
+
+        wp_redirect('http://www.webtoffee.com/'); // Redirect to your desired page here.
+
+        exit;
+    }
+}
